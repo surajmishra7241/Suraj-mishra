@@ -1,0 +1,63 @@
+#include<stdio.h> 
+#include<unistd.h> 
+#include<fcntl.h> 
+#include<dirent.h> 
+#include<time.h> 
+#include<pthread.h> 
+#include<stdlib.h> 
+int i=100,s=0;// i for min pid value 
+int p[1000][2];// to store the pid values 
+int runn(){// to store the pid values in array. 
+while(i<1001){ 
+p[s][0]=i; 
+p[s][1]=0;// 0-for unused pid values initially 
+i++; 
+s++;}
+} 
+int allocates(){// to allocate pid values to the threads. 
+int d=0,aloc=1; 
+for(d=0;d<1000;d++){ 
+if(p[d][1]==0){ 
+p[d][1]=1; 
+aloc=0;//to define pid allocated or not. 
+break; 
+} 
+} 
+return aloc?-1:d; 
+} 
+void releasepid(int pos){//to release pid values. 
+printf("in release\n"); 
+p[pos][1]=0; 
+} 
+void *gthread(void *l)
+{ 
+int pid=*(int *)l; 
+int idp=allocates(); 
+if(idp==-1)
+{printf("no id available\n"); 
+q=-1; 
+}
+else{ 
+printf("id assigned to thread %d %d\n",pid,idp); 
+int s=rand()%(((10-1)+1)+1);//to sleep the thread between 1 to 10 seconds. 
+sleep(s); 
+printf("process slept for s seconds\n"); 
+releasepid(idp); 
+} 
+pthread_exit(NULL); 
+} 
+int main(){ 
+runn(); 
+pthread_t n[4];//number of threads to run. 
+srand(time(NULL)); 
+static int m=0; 
+for(m=0;m<4;m++)
+{
+pthread_create(&(n[m]),NULL,gthread,(void*)&m);//to create thread 
+} 
+int v=0; 
+for(v=0;v<4;v++){ 
+pthread_join(n[v],NULL); 
+return 0; 
+} 
+}
